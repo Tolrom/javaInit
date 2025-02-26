@@ -6,11 +6,12 @@ public class Main {
     public static void main(String[] args) {
         Database.getConnection();
         User newUser = new User(
-                "Maxime",
-                "Morlot",
+                "Emixam",
+                "Tolrom",
                 "max@mail.fr",
                 "123456"
         );
-        UserRepository.save(newUser);
+        UserRepository.update(newUser, "max@mail.fr");
+        System.out.println(UserRepository.findAll());
     }
 }
