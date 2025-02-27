@@ -16,7 +16,7 @@ public class CategoryRepository {
 
     // Methods
 
-    public Category save(Category category){
+    public static Category save(Category category){
         Category newCategory = null;
         try {
             // Request
@@ -39,7 +39,7 @@ public class CategoryRepository {
         }
         return newCategory;
     }
-    public boolean exists(String categoryName){
+    public static boolean exists(String categoryName){
         boolean getCategory = false;
         try {
             String sql = "SELECT id FROM category WHERE category_name = ?";

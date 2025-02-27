@@ -16,7 +16,7 @@ public class RoleRepository {
 
     // Methods
 
-    public Role save(Role role){
+    public static Role save(Role role){
         Role newRole = null;
         try {
             // Request
@@ -39,7 +39,7 @@ public class RoleRepository {
         }
         return newRole;
     }
-    public boolean exists(String roleName){
+    public static boolean exists(String roleName){
         boolean getRole = false;
         try {
             String sql = "SELECT id FROM role WHERE role_name = ?";

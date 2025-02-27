@@ -1,6 +1,7 @@
 package com.tolrom.javaInit.repository;
 
 import com.tolrom.javaInit.db.Database;
+import com.tolrom.javaInit.model.Role;
 import com.tolrom.javaInit.model.User;
 
 import java.sql.Connection;
@@ -16,12 +17,12 @@ public class UserRepository {
 
     // Methods
 
-    public static User save(User user) {
+    public static User save(User user, Role role) {
         User newUser = null;
         try {
             // Request
-            String sql =    "INSERT INTO user(firstname, lastname, email, password) " +
-                            "VALUE(?,?,?,?);";
+            String sql =    "INSERT INTO user(firstname, lastname, email, password, role_id) " +
+                            "VALUE(?,?,?,?,?);";
             // Prepare
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // Bind params
@@ -29,6 +30,7 @@ public class UserRepository {
             preparedStatement.setString(2, user.getLastname());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setInt(5, RoleRepository.findByName(role.getRoleName()).getId());
             // Execute
             int nbRows = preparedStatement.executeUpdate();
             // Check if request went through
@@ -70,7 +72,7 @@ public class UserRepository {
         User user = null;
         try {
             // Request
-            String sql = "SELECT id, firstname, lastname, email FROM users WHERE email = ?";
+            String sql = "SELECT id, firstname, lastname, email FROM user WHERE email = ?";
             // Prepare
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // Bind param
@@ -120,7 +122,7 @@ public class UserRepository {
         }
         try {
             // Request
-            String sql =    "UPDATE users " +
+            String sql =    "UPDATE user " +
                             "SET firstname = ?," +
                                 "lastname = ?," +
                                 "email = ? " +
@@ -148,8 +150,8 @@ public class UserRepository {
     public  static User saveWithRole(User user){
         User newUser = null;
         try {
-            String sql = "INSERT INTO users(firstname, lastname, email, password, roles_id)" +
-                    "VALUE(?,?,?,?,(SELECT id FROM roles WHERE roles_name = ?";
+            String sql = "INSERT INTO user(firstname, lastname, email, password, role_id)" +
+                    "VALUE(?,?,?,?,(SELECT id FROM role WHERE role_name = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // Bind params
             preparedStatement.setString(1, user.getFirstname());
