@@ -9,17 +9,16 @@ public class User {
     private String lastname;
     private String email;
     private String password;
-    private Role role;
+    private Role role = new Role("USER");
 
     // Constructors
 
     public User(){}
-    public User(String firstname, String lastname, String email, String password, Role role) {
+    public User(String firstname, String lastname, String email, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.role = role;
     }
 
     // Getters & Setters
@@ -79,6 +78,7 @@ public class User {
                 ", firstname='" + this.firstname + '\'' +
                 ", lastname='" + this.lastname + '\'' +
                 ", email='" + this.email + '\'' +
+                ", role="+ this.role.getRoleName()+ '\''+
                 '}';
     }
 }

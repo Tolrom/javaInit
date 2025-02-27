@@ -88,11 +88,14 @@ public class Task {
 
     // Constructors
 
-    public Task(){}
+    public Task(){
+        this.categories = new ArrayList<>();
+    }
     public Task(String title, String content, User user){
         this.title = title;
         this.content = content;
         this.user = user;
+        this.categories = new ArrayList<>();
     }
 
 }

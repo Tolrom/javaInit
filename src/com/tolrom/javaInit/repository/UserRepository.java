@@ -17,9 +17,10 @@ public class UserRepository {
     // Methods
 
     public static User save(User user) {
+        User newUser = null;
         try {
             // Request
-            String sql =    "INSERT INTO users(firstname, lastname, email, password) " +
+            String sql =    "INSERT INTO user(firstname, lastname, email, password) " +
                             "VALUE(?,?,?,?);";
             // Prepare
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -32,7 +33,7 @@ public class UserRepository {
             int nbRows = preparedStatement.executeUpdate();
             // Check if request went through
             if (nbRows > 0){
-                User newUser = new User(
+                newUser = new User(
                         user.getFirstname(),
                         user.getLastname(),
                         user.getEmail(),
@@ -42,7 +43,28 @@ public class UserRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new User();
+        return newUser;
+    }
+    public static boolean exists(String email) {
+        boolean getUser = false;
+        try {
+            String sql = "SELECT id FROM user WHERE email = ?";
+            // Prepare
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            // Bind Params
+            preparedStatement.setString(1, email);
+            // Retrieve result
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Check result
+            while(resultSet.next()){
+                getUser = true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getUser;
     }
     public static User findByMail(String email) {
         User user = null;
@@ -72,7 +94,7 @@ public class UserRepository {
         ArrayList<User> users = new ArrayList<>();
         try {
             // Request
-            String sql = "SELECT id, firstname, lastname, email FROM users";
+            String sql = "SELECT id, firstname, lastname, email FROM user";
             // Prepare
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // Execute
@@ -123,19 +145,26 @@ public class UserRepository {
         }
         return user;
     }
-    public static String delete(int id){
+    public  static User saveWithRole(User user){
+        User newUser = null;
         try {
-            // Request
-            String sql = "DELETE FROM users WHERE id = ?";
-            // Prepare
+            String sql = "INSERT INTO users(firstname, lastname, email, password, roles_id)" +
+                    "VALUE(?,?,?,?,(SELECT id FROM roles WHERE roles_name = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            // Bind param
-            preparedStatement.setInt(1, id);
-            // Execute
-            ResultSet result = preparedStatement.executeQuery();
+            // Bind params
+            preparedStatement.setString(1, user.getFirstname());
+            preparedStatement.setString(2, user.getLastname());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(2, user.getRole().getRoleName());
+            int nbRows = preparedStatement.executeUpdate();
+            if (nbRows > 0){
+                newUser = user;
+            }
+
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+        return newUser;
     }
 }
