@@ -9,15 +9,17 @@ public class User {
     private String lastname;
     private String email;
     private String password;
+    private Role role;
 
     // Constructors
 
     public User(){}
-    public User(String firstname, String lastname, String email, String password) {
+    public User(String firstname, String lastname, String email, String password, Role role) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     // Getters & Setters
@@ -58,6 +60,14 @@ public class User {
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     // Methods

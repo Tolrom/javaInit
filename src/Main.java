@@ -9,9 +9,10 @@ public class Main {
                 "Emixam",
                 "Tolrom",
                 "max@mail.fr",
-                "123456"
+                "123456",
+                null
         );
-        UserRepository.update(newUser, "max@mail.fr");
+        // System.out.println(UserRepository.update(newUser, "max@mail.fr"));
         System.out.println(UserRepository.findAll());
     }
 }
