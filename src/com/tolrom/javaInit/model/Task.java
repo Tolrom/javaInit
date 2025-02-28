@@ -98,4 +98,23 @@ public class Task {
         this.categories = new ArrayList<>();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder categories = new StringBuilder("[");
+        for (Category cat : this.categories) {
+            categories.append(cat.getCategoryName()).append(", ");
+        }
+        if (!this.categories.isEmpty()) {
+            categories.setLength(categories.length() - 2);
+        }
+        categories.append("]");
+        return "Task{" +
+                "id='" + this.id + '\'' +
+                ", title='" + this.title + '\'' +
+                ", content='" + this.content + '\'' +
+                ", user='" + this.user.getFirstname() + '\'' +
+                ", categories="+ categories
+                + '}';
+    }
+
 }

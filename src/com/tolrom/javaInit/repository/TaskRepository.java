@@ -6,6 +6,7 @@ import com.tolrom.javaInit.model.Role;
 import com.tolrom.javaInit.model.Task;
 import com.tolrom.javaInit.model.User;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -146,19 +147,63 @@ public class TaskRepository {
     }
     public static ArrayList<Task> findAll(){
         Task task = null;
+        User user = null;
+        Role role = null;
         ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
+        ArrayList<Role> roles = new ArrayList<>();
+        ArrayList<Category> cats = new ArrayList<>();
         try {
             // Request
-            String sql = "SELECT id, title, content FROM task ";
+            String sql ="SELECT t.id AS tId, t.title, t.content, t.created_at, t.end_date, t.`status`, \n" +
+                        "u.id AS uId, u.firstname, u.lastname, r.id AS rId, r.role_name AS rName,\n" +
+                        "group_concat(c.id) AS catId,\n" +
+                        "group_concat(c.category_name) AS catName \n" +
+                        "FROM task AS t\n" +
+                        "LEFT JOIN task_category AS tc ON tc.task_id = t.id\n" +
+                        "LEFT JOIN category AS c ON tc.category_id = c.id\n" +
+                        "INNER JOIN user AS u ON t.user_id = u.id\n" +
+                        "INNER JOIN role AS r ON u.role_id = r.id\n" +
+                        "GROUP BY t.id";
             // Prepare
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // Execute
             ResultSet result = preparedStatement.executeQuery();
             while(result.next()){
+                // Task instance
                 task = new Task();
-                task.setId(result.getInt("id"));
+                task.setId(result.getInt("tId"));
                 task.setTitle(result.getString("title"));
                 task.setContent(result.getString("content"));
+                task.setCreatedAt(result.getDate("created_at"));
+                task.setEndDate(result.getDate("end_date"));
+                task.setStatus(result.getBoolean("status"));
+                // User instance
+                user = new User();
+                user.setId(result.getInt("uId"));
+                user.setFirstname(result.getString("firstname"));
+                user.setLastname(result.getString("lastname"));
+                task.setUser(user);
+                // Role instance
+                role = new Role();
+                role.setId(result.getInt("rId"));
+                role.setRoleName(result.getString("rName"));
+                // Categories instance
+                String catNames = result.getString("catName");
+                String catIds = result.getString("catId");
+                if (catNames != null && catIds != null) {
+                    String[] catNameArray = catNames.split(",");
+                    String[] catIdArray = catIds.split(",");
+                    for (int i = 0; i < catNameArray.length; i++) {
+                        Category category = new Category();
+                        category.setId(Integer.parseInt(catIdArray[i].trim()));
+                        category.setCategoryName(catNameArray[i].trim());
+                        cats.add(category);
+                    }
+                }
+                for (Category cat : cats) {
+                    task.addCategory(cat);
+                }
                 tasks.add(task);
             };
         } catch (Exception e) {

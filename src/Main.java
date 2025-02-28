@@ -27,6 +27,7 @@ public class Main {
         // System.out.println((UserRepository.save(newUser, userRole)));
         // System.out.println(UserRepository.update(newUser, "max@mail.fr"));
         // System.out.println(UserRepository.findAll());
-        System.out.println((TaskRepository.save(newTask, categories)));
+        // System.out.println((TaskRepository.save(newTask, categories)));
+        System.out.println(TaskRepository.findAll());
     }
 }
